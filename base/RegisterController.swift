@@ -69,21 +69,13 @@ class RegisterController: UIViewController {
                     
                     // NSUserDefaults
                     self.sManager.getUserData { result in
-                        let result = result
+                        let email = result
                         
-                        print(result)
+                        print(email)
                         
-                        let params = [
-                            "user": [
-                                "email": result,
-                                
-                            ]
-                        ]
-                        let headers = [
-                            "X-CSRF-Token": ""
-                        ]
+
                         
-                        self.sManager.alert(self)
+                        self.sManager.alert(self, data: email, headers: headers)
                         
                     }
                     
@@ -102,6 +94,8 @@ class RegisterController: UIViewController {
             return
         }
     }
+    
+    
     
 
 

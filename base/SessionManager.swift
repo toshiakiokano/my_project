@@ -20,20 +20,38 @@ class SessionManager {
     ///////////////////////////////////////////////
     // MARK: alert
     ///////////////////////////////////////////////
-    func alert(target: UIViewController) {
+    func alert(target: UIViewController, data: String, headers: [String: String]) {
         
         let alert = UIAlertController(title: "Pinコード入力", message: "メール本文にあるPinコード6ケタを入力してください。", preferredStyle: UIAlertControllerStyle.Alert)
         
         let submit = UIAlertAction(title: "送信", style:  UIAlertActionStyle.Default, handler: { (action: UIAlertAction) -> Void in
             
             let textValues = alert.textFields
+            var pin = ""
             
             if textValues != nil {
                 if let values = textValues {
-                    for value in values {
-                        print(value)
-                    }
+                    
+                    pin = values[0].text!
+                    
+                    let params = [
+                        "user": [
+                            "email": data,
+                            "confirmation_token": pin
+                        ]
+                    ]
+                    
+                    self.confirmToken(params, headers: headers)
+                    
+                    
+//                    for value in values {
+//                        callback(value.text)
+//                    }
                 }
+                
+                
+                
+                
             }
             
             
@@ -59,7 +77,7 @@ class SessionManager {
                 
                 if response.result.isSuccess {
                     if let value = response.result.value {
-                        let json = JSON(value)
+                        _ = JSON(value)
                         
                         
                         
