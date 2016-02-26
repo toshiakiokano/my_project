@@ -17,57 +17,10 @@ class SessionManager {
     static let sharedInstance = SessionManager()
     
     
-    ///////////////////////////////////////////////
-    // MARK: alert
-    ///////////////////////////////////////////////
-    func alert(target: UIViewController, data: String, headers: [String: String]) {
-        
-        let alert = UIAlertController(title: "Pinコード入力", message: "メール本文にあるPinコード6ケタを入力してください。", preferredStyle: UIAlertControllerStyle.Alert)
-        
-        let submit = UIAlertAction(title: "送信", style:  UIAlertActionStyle.Default, handler: { (action: UIAlertAction) -> Void in
-            
-            let textValues = alert.textFields
-            var pin = ""
-            
-            if textValues != nil {
-                if let values = textValues {
-                    
-                    pin = values[0].text!
-                    
-                    let params = [
-                        "user": [
-                            "email": data,
-                            "confirmation_token": pin
-                        ]
-                    ]
-                    
-                    self.confirmToken(params, headers: headers)
-                    
-                    
-//                    for value in values {
-//                        callback(value.text)
-//                    }
-                }
-                
-                
-                
-                
-            }
-            
-            
-        })
-        
-        alert.addAction(submit)
-        alert.addTextFieldWithConfigurationHandler({ (text: UITextField!) -> Void in
-            text.placeholder = "Pin 6ケタ"
-        })
-        
-        target.presentViewController(alert, animated: true, completion: nil)
-        
-    }
+
     
     
-    private func confirmToken(params: [String: Dictionary<String, String>], headers: [String: String]) {
+    func confirmToken(params: [String: Dictionary<String, String>], headers: [String: String], callback: (result: Bool, errors: String) -> Void) {
         SVProgressHUD.showWithStatus("読込中")
         
         Alamofire
@@ -77,13 +30,29 @@ class SessionManager {
                 
                 if response.result.isSuccess {
                     if let value = response.result.value {
-                        _ = JSON(value)
+                        let json = JSON(value)
                         
+                        // 読込中消す
+                        SVProgressHUD.dismiss()
                         
-                        
+                        if json["Errors"].isEmpty {
+                            let msg = ""
+                            SVProgressHUD.showWithStatus("完了")
+                            
+                            callback(result: true, errors: msg)
+                        } else {
+                            let msg = self.validations(json["Errors"])
+                            SVProgressHUD.showWithStatus(msg)
+                            
+                            callback(result: false, errors: msg)
+                        }
                     }
+
                 } else if response.result.isFailure {
+                    SVProgressHUD.showSuccessWithStatus("通信に失敗しました。")
                     print(response.result.value)
+                    
+                    callback(result: false, errors: "")
                 } else {
                     return
                 }
@@ -117,8 +86,8 @@ class SessionManager {
     ///////////////////////////////////////////////
     // MARK: Register
     ///////////////////////////////////////////////
-    func register(params: [String: Dictionary<String, String>], headers: [String: String], callback: (result: Bool, errors: String) -> Void) {
-        SVProgressHUD.showWithStatus("読込中")
+    func register(params: [String: Dictionary<String, String>], headers: [String: String], target: UIViewController, callback: (result: Bool, errors: String) -> Void) {
+        SVProgressHUD.show()
         
         Alamofire
             .request(.POST, "\(Const.domain)/api/v1/users/registrations", parameters: params, headers: headers)
@@ -133,8 +102,7 @@ class SessionManager {
                         
                         if json["Errors"].isEmpty {
                             let msg = ""
-                            
-                            //self.setUserObjectData(json)
+
                             self.setUserData(json)
                             
                             callback(result: true, errors: msg)
@@ -145,7 +113,7 @@ class SessionManager {
                         }
                     }
                 } else if response.result.isFailure {
-                    SVProgressHUD.showSuccessWithStatus("通信に失敗しました。")
+                    SVProgressHUD.showErrorWithStatus("通信に失敗しました。")
                     print(response.result.value)
                     
                     callback(result: false, errors: "")
@@ -154,6 +122,7 @@ class SessionManager {
                 }
             }
     }
+    
     
     ///////////////////////////////////////////////
     // MARK: Login
@@ -200,52 +169,7 @@ class SessionManager {
     }
     
     
-    
-    // realm
-//    func getUserObjectData(callback: [String] -> Void) {
-//        var data: [String] = []
-//        
-//        do {
-//            let realm = try Realm()
-//            let results = realm.objects(User)
-//            
-//            for result in results {
-//                print(result.email)
-//                
-//                data.append(result.email)
-//            }
-//            
-//            callback(data)
-//
-//        } catch {
-//            print("Failed")
-//        }
-//    }
-//    
-//    
-//    
-//    // realm TODO returnがない
-//    private func setUserObjectData(obj: JSON) {
-//        // to User object
-//        let user = User()
-//        if let email = obj["email"].string {
-//            user.email = email
-//        }
-//        
-//        
-//        // Realm
-//        do {
-//            let realm = try Realm()
-//            
-//            try realm.write {
-//                realm.add(user)
-//                //realm.deleteAll()
-//            }
-//        } catch {
-//            print("Failed")
-//        }
-//    }
-    
+
     
     
     // validatetor

@@ -7,5 +7,6 @@
 //
 
 struct Const {
-    static let domain = "http://localhost:3000"
+//    static let domain = "http://localhost:3000"
+    static let domain = "https://safe-waters-36187.herokuapp.com/"
 }

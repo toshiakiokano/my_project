@@ -7,7 +7,8 @@
 //
 
 import UIKit
-import Alamofire
+//import Alamofire
+import SVProgressHUD
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -18,12 +19,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         
-
-        
-        
         return true
     }
 
+    
+    func application(app: UIApplication, openURL url: NSURL, options: [String : AnyObject]) -> Bool {
+        do {
+            // from NSURL to String
+            let url = try url.absoluteString
+            
+            // set regexp pattern
+            let pattern = "([a-zA-Z0-9]{16})+"
+        
+            
+            let confirm_token: [String] = Regexp(pattern).matches(url)!
+            
+            print(confirm_token[0])
+            
+            let ud = NSUserDefaults.standardUserDefaults()
+            ud.setObject(confirm_token[0], forKey: "confirm_token")
+            ud.synchronize()
+        } catch {
+            print("error")
+        }
+        
+        return false
+    }
+    
+    
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
