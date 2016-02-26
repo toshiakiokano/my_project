@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		749ECB54B5A61246BB6F663C /* Pods_base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 295A24D7EAA82F1A46C9861F /* Pods_base.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		9F2E58051C744EDE00A06219 /* ModuleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F2E58041C744EDE00A06219 /* ModuleManager.swift */; };
 		9F666A0A1C2260390074E23E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F666A091C2260390074E23E /* AppDelegate.swift */; };
 		9F666A0C1C2260390074E23E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F666A0B1C2260390074E23E /* ViewController.swift */; };
 		9F666A0F1C2260390074E23E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9F666A0D1C2260390074E23E /* Main.storyboard */; };
@@ -20,12 +19,11 @@
 		9F666A251C22641B0074E23E /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F666A241C22641B0074E23E /* LoginController.swift */; };
 		9F666A281C22744D0074E23E /* SessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F666A271C22744D0074E23E /* SessionManager.swift */; };
 		9F666A2B1C22773D0074E23E /* Const.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F666A2A1C22773D0074E23E /* Const.swift */; };
-		9FB2C79D1C76D6720005EF8B /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB2C79C1C76D6720005EF8B /* User.swift */; };
+		9FB6F3D31C7EBD7B00165E05 /* Regexp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB6F3D21C7EBD7B00165E05 /* Regexp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		295A24D7EAA82F1A46C9861F /* Pods_base.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_base.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		9F2E58041C744EDE00A06219 /* ModuleManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModuleManager.swift; sourceTree = "<group>"; };
 		9F666A061C2260390074E23E /* base.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = base.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F666A091C2260390074E23E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9F666A0B1C2260390074E23E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -40,7 +38,7 @@
 		9F666A271C22744D0074E23E /* SessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.swift; path = SessionManager.swift; sourceTree = "<group>"; tabWidth = 4; };
 		9F666A291C2275520074E23E /* Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
 		9F666A2A1C22773D0074E23E /* Const.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Const.swift; sourceTree = "<group>"; };
-		9FB2C79C1C76D6720005EF8B /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		9FB6F3D21C7EBD7B00165E05 /* Regexp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Regexp.swift; sourceTree = "<group>"; };
 		B20F50BD7F05DE83057A3B0F /* Pods-base.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-base.debug.xcconfig"; path = "Pods/Target Support Files/Pods-base/Pods-base.debug.xcconfig"; sourceTree = "<group>"; };
 		BA1831756D61F83D84FA337F /* Pods-base.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-base.release.xcconfig"; path = "Pods/Target Support Files/Pods-base/Pods-base.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -141,7 +139,7 @@
 			children = (
 				9F666A271C22744D0074E23E /* SessionManager.swift */,
 				9F666A2A1C22773D0074E23E /* Const.swift */,
-				9F2E58041C744EDE00A06219 /* ModuleManager.swift */,
+				9FB6F3D21C7EBD7B00165E05 /* Regexp.swift */,
 			);
 			name = manager;
 			sourceTree = "<group>";
@@ -149,7 +147,6 @@
 		9FB2C79B1C76D6560005EF8B /* model */ = {
 			isa = PBXGroup;
 			children = (
-				9FB2C79C1C76D6720005EF8B /* User.swift */,
 			);
 			name = model;
 			sourceTree = "<group>";
@@ -280,9 +277,8 @@
 			files = (
 				9F666A0C1C2260390074E23E /* ViewController.swift in Sources */,
 				9F666A251C22641B0074E23E /* LoginController.swift in Sources */,
-				9F2E58051C744EDE00A06219 /* ModuleManager.swift in Sources */,
 				9F666A0A1C2260390074E23E /* AppDelegate.swift in Sources */,
-				9FB2C79D1C76D6720005EF8B /* User.swift in Sources */,
+				9FB6F3D31C7EBD7B00165E05 /* Regexp.swift in Sources */,
 				9F666A281C22744D0074E23E /* SessionManager.swift in Sources */,
 				9F666A231C22640C0074E23E /* RegisterController.swift in Sources */,
 				9F666A2B1C22773D0074E23E /* Const.swift in Sources */,

@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import SVProgressHUD
 
 
 
@@ -18,7 +18,6 @@ class RegisterController: UIViewController {
     @IBOutlet weak var errorField: UILabel!
    
     var token = ""
-    
     
     let sManager = SessionManager.sharedInstance
     
@@ -60,31 +59,13 @@ class RegisterController: UIViewController {
             ]
             
             
-            sManager.register(params, headers: headers, callback: { result in
+            sManager.register(params, headers: headers, target: self, callback: { result in
                 if result.result {
                     if self.errorField.text != "" {
                         self.errorField.text = ""
                         self.errorField.hidden = true
                     }
-                    
-                    // NSUserDefaults
-                    self.sManager.getUserData { result in
-                        let email = result
-                        
-                        print(email)
-                        
-
-                        
-                        self.sManager.alert(self, data: email, headers: headers)
-                        
-                    }
-                    
-                    // realm
-//                    self.sManager.getUserObjectData({ result in
-//                        let result = result
-//                        
-//                        self.sManager.alert(self)
-//                    })
+                    self.alert()
                 } else {
                     self.errorField.hidden = false
                     self.errorField.text = result.errors
@@ -95,7 +76,15 @@ class RegisterController: UIViewController {
         }
     }
     
-    
+    // alert
+    private func alert() {
+        let alert = UIAlertController(title: "仮登録が完了しました", message: "メールから本登録をお済ませください。", preferredStyle: .Alert)
+        let action = UIAlertAction(title: "OK", style: .Default, handler: { action in
+            self.dismissViewControllerAnimated(true, completion: nil)
+        })
+        alert.addAction(action)
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
     
 
 
