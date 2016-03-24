@@ -14,19 +14,69 @@ class LoginController: UIViewController {
     @IBOutlet weak var passwordField: UITextField!
     @IBOutlet weak var errorField: UILabel!
     
+    let sManager = SessionManager.sharedInstance
     var token = ""
+    let ud = NSUserDefaults.standardUserDefaults()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        SessionManager.sharedInstance.get_csrf_token({ token in
+        errorField.hidden = true
+
+        
+        sManager.getCSRFToken({ token in
             print(token)
             
             self.token = token
+            self.confirmed_token()
         })
-        
-        errorField.hidden = true
     }
+    
+    
+    
+    func confirmed_token() {
+        if self.ud.objectForKey("confirm_token") != nil {
+            let confirm_token = self.ud.objectForKey("confirm_token") as! String
+            let email = self.ud.objectForKey("email") as! String
+            
+            
+            let params = [
+                "user": [
+                    "email": email,
+                    "confirmation_token": confirm_token
+                ]
+            ]
+            
+            let headers = [
+                "X-CSRF-Token": self.token
+            ]
+            
+            
+            self.sManager.confirmToken(params, headers: headers, callback: { result in
+                print("confirm")
+                
+                if result.result {
+                    if self.errorField.text != "" {
+                        self.errorField.text = ""
+                        self.errorField.hidden = true
+                    }
+                    
+                    
+                } else {
+                    self.errorField.hidden = false
+                    self.errorField.text = result.errors
+                }
+                
+                self.ud.removeObjectForKey("confirm_token")
+            })
+            
+        }
+    }
+    
+    
+    
+    
     
     @IBAction func pressedLoginButton(sender: AnyObject) {
         if ((emailField.text! != "") && (passwordField.text! != "")) {
@@ -44,7 +94,18 @@ class LoginController: UIViewController {
                 "X_CSRF_Token": self.token
             ]
             
-            SessionManager.sharedInstance.login(params, label: errorField, headers: headers)
+            SessionManager.sharedInstance.login(params, label: errorField, headers: headers, callback: { result in
+                
+                if result.result {
+                    if self.errorField.text != "" {
+                        self.errorField.text = ""
+                        self.errorField.hidden = true
+                    }
+                } else {
+                    self.errorField.hidden = false
+                    self.errorField.text = result.errors
+                }
+            })
         } else {
             return
         }

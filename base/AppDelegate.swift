@@ -24,24 +24,56 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     
     func application(app: UIApplication, openURL url: NSURL, options: [String : AnyObject]) -> Bool {
-        do {
-            // from NSURL to String
-            let url = try url.absoluteString
+   
+            print(url.scheme, url.host, url.lastPathComponent, url.query)
             
-            // set regexp pattern
-            let pattern = "([a-zA-Z0-9]{16})+"
+            if url.host == "login" {
+                var token: String = ""
+                
+                func getQuery() {
+                    guard let query = url.query else {
+                        return
+                    }
+                    
+                    token = query as String
+                }
+                
+                getQuery()
+                
+                
+                
+                let ud = NSUserDefaults.standardUserDefaults()
+                ud.setObject(token, forKey: "confirm_token")
+                ud.synchronize()
+            }
+            
+            
+            
         
-            
-            let confirm_token: [String] = Regexp(pattern).matches(url)!
-            
-            print(confirm_token[0])
-            
-            let ud = NSUserDefaults.standardUserDefaults()
-            ud.setObject(confirm_token[0], forKey: "confirm_token")
-            ud.synchronize()
-        } catch {
-            print("error")
-        }
+//                 do {
+//            if url.scheme == "base" {
+//                
+//                // from NSURL to String
+//                let url = try url.absoluteString
+//                
+//                // set regexp pattern
+//                let pattern = "([a-zA-Z0-9]{16})+"
+//            
+//                
+//                let confirm_token: [String] = Regexp(pattern).matches(url)!
+//                
+//                print(confirm_token[0])
+//                
+//                let token = confirm_token[0] as String
+//                
+//                
+//                let ud = NSUserDefaults.standardUserDefaults()
+//                ud.setObject(token, forKey: "confirm_token")
+//                ud.synchronize()
+//            }
+//        } catch {
+//            print("error")
+//        }
         
         return false
     }
