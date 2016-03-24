@@ -19,7 +19,9 @@ class SessionManager {
     
 
     
-    
+    ///////////////////////////////////////////////
+    // MARK: confirmToken
+    ///////////////////////////////////////////////
     func confirmToken(params: [String: Dictionary<String, String>], headers: [String: String], callback: (result: Bool, errors: String) -> Void) {
         SVProgressHUD.showWithStatus("読込中")
         
@@ -29,25 +31,25 @@ class SessionManager {
                 SVProgressHUD.dismiss()
                 
                 if response.result.isSuccess {
-                    if let value = response.result.value {
-                        let json = JSON(value)
-                        
-                        // 読込中消す
-                        SVProgressHUD.dismiss()
-                        
-                        if json["Errors"].isEmpty {
-                            let msg = ""
-                            SVProgressHUD.showWithStatus("完了")
-                            
-                            callback(result: true, errors: msg)
-                        } else {
-                            let msg = self.validations(json["Errors"])
-                            SVProgressHUD.showWithStatus(msg)
-                            
-                            callback(result: false, errors: msg)
-                        }
+                    guard let value = response.result.value else {
+                        return
                     }
-
+                    
+                    let json = JSON(value)
+                    
+                    // 読込中消す
+                    SVProgressHUD.dismiss()
+                    
+                    if json["Errors"].isEmpty {
+                        let msg = ""
+                        //SVProgressHUD.showWithStatus("完了")
+                        
+                        callback(result: true, errors: msg)
+                    } else {
+                        let msg = self.validations(json["Errors"])
+                        //SVProgressHUD.showWithStatus(msg)
+                        
+                        callback(result: false, errors: msg)                    }
                 } else if response.result.isFailure {
                     SVProgressHUD.showSuccessWithStatus("通信に失敗しました。")
                     print(response.result.value)
@@ -65,13 +67,15 @@ class SessionManager {
     ///////////////////////////////////////////////
     // MARK: get_csrf_token
     ///////////////////////////////////////////////
-    func get_csrf_token(callback: (String) -> Void) {
+    func getCSRFToken(callback: (String) -> Void) {
         Alamofire
             .request(.POST, "\(Const.domain)/api/v1/token")
             .responseString { response in
 
                 if response.result.isSuccess {
-                    let token = response.result.value!
+                    guard let token = response.result.value else {
+                        return
+                    }
                     
                     callback(token)
                 } else if response.result.isFailure {
@@ -94,23 +98,24 @@ class SessionManager {
             .responseJSON { response in
                 
                 if response.result.isSuccess {
-                    if let value = response.result.value {
-                        let json = JSON(value)
+                    guard let value = response.result.value else {
+                        return
+                    }
+                    
+                    let json = JSON(value)
+                    
+                    SVProgressHUD.dismiss()
+                    
+                    if json["Errors"].isEmpty {
+                        let msg = ""
                         
-                        // 読込中消す
-                        SVProgressHUD.dismiss()
+                        self.setUserData(json)
                         
-                        if json["Errors"].isEmpty {
-                            let msg = ""
-
-                            self.setUserData(json)
-                            
-                            callback(result: true, errors: msg)
-                        } else {
-                            let msg = self.validations(json["Errors"])
-
-                            callback(result: false, errors: msg)
-                        }
+                        callback(result: true, errors: msg)
+                    } else {
+                        let msg = self.validations(json["Errors"])
+                        
+                        callback(result: false, errors: msg)
                     }
                 } else if response.result.isFailure {
                     SVProgressHUD.showErrorWithStatus("通信に失敗しました。")
@@ -127,16 +132,39 @@ class SessionManager {
     ///////////////////////////////////////////////
     // MARK: Login
     ///////////////////////////////////////////////
-    func login(params: [String: Dictionary<String, String>], label: UILabel, headers: [String: String]) {
-        SVProgressHUD.showWithStatus("読み込み中")
+    func login(params: [String: Dictionary<String, String>], label: UILabel, headers: [String: String], callback: (result: Bool, errors: String) -> Void) {
+        SVProgressHUD.show()
         
         Alamofire
-            .request(.POST, "\(Const.domain)/api/v1/users/sign_in", parameters: params, headers: headers)
+            .request(.POST, "\(Const.domain)/api/v1/users/sessions", parameters: params, headers: headers)
             .responseJSON { response in
-                print(response.result)
-                print(response.data)
-                
-                
+                if response.result.isSuccess {
+                    guard let value = response.result.value else {
+                        return
+                    }
+                    
+                    let json = JSON(value)
+                    
+                    SVProgressHUD.dismiss()
+                    
+                    if json["Errors"].isEmpty {
+                        let msg = ""
+                        
+                        callback(result: true, errors: msg)
+                    } else {
+                        let msg = self.validations(json["Errors"])
+                        
+                        
+                        callback(result: false, errors: msg)
+                    }
+                } else if response.result.isFailure {
+                    SVProgressHUD.showErrorWithStatus("通信に失敗しました。")
+                    print(response.result.value)
+                    
+                    callback(result: false, errors: "")
+                } else {
+                    return
+                }
                 
         }
     }
@@ -176,14 +204,22 @@ class SessionManager {
     private func validations(obj: JSON) -> String {
         var msgs: [String] = []
         
-        if let items = obj.array {
+        func errors() {
+            guard let items = obj.array else {
+                return
+            }
+            
+            
             for item in items {
-                if let error = item.string {
-                    msgs.append(error)
+                guard let error = item.string else {
+                    return
                 }
+                msgs.append(error)
             }
         }
         
+        errors()
+
         let msg = msgs.joinWithSeparator("\n")
         return msg
     }

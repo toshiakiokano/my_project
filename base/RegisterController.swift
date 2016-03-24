@@ -27,7 +27,7 @@ class RegisterController: UIViewController {
         super.viewDidLoad()
         
         // tokenを取得　フォームを送る際にこのtokenをつかってサーバに投げる
-        sManager.get_csrf_token { token in
+        sManager.getCSRFToken { token in
             print(token)
             
             self.token = token

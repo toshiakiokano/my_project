@@ -27,7 +27,7 @@
 			<string>com.toshiaki.base</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>baselogin</string>
+				<string>base</string>
 			</array>
 		</dict>
 	</array>

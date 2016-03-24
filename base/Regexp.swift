@@ -7,7 +7,7 @@
 //
 
 import Foundation
-// 正規表現
+// 正規表現  使ってない
 class Regexp {
     let internalRegexp: NSRegularExpression
     let pattern: String
